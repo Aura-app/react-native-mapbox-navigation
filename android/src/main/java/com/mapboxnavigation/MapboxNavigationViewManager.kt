@@ -2,6 +2,7 @@ package com.mapboxnavigation
 
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.common.MapBuilder
 import com.facebook.react.uimanager.ThemedReactContext
@@ -24,12 +25,23 @@ class MapboxNavigationViewManager(private var reactContext: ReactApplicationCont
     super.onDropViewInstance(view)
   }
 
+  override fun getCommandsMap(): Map<String, Int> {
+    return mapOf("startNavigation" to 1)
+  }
+
+  override fun receiveCommand(root: MapboxNavigationView, commandId: Int, args: ReadableArray?) {
+    when (commandId) {
+      1 -> root.initNavigation()
+    }
+  }
+
   override fun getExportedCustomDirectEventTypeConstants(): MutableMap<String, Map<String, String>> {
     return MapBuilder.of(
       "onLocationChange", MapBuilder.of("registrationName", "onLocationChange"),
       "onError", MapBuilder.of("registrationName", "onError"),
       "onCancelNavigation", MapBuilder.of("registrationName", "onCancelNavigation"),
       "onArrive", MapBuilder.of("registrationName", "onArrive"),
+      "onNavigationReady", MapBuilder.of("registrationName", "onNavigationReady"),
       "onRouteProgressChange", MapBuilder.of("registrationName", "onRouteProgressChange"),
     )
   }
@@ -114,6 +126,11 @@ class MapboxNavigationViewManager(private var reactContext: ReactApplicationCont
     if (value != null)  {
       view?.setTravelMode(value)
     }
+  }
+
+  @ReactMethod
+  override fun startNavigation(view: MapboxNavigationView?) {
+    view?.initNavigation()
   }
 
   companion object {
