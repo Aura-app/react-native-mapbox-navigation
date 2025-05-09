@@ -57,6 +57,7 @@ export type NativeEventsProps = {
   onError?: (event: NativeEvent<MapboxEvent>) => void;
   onCancelNavigation?: (event: NativeEvent<MapboxEvent>) => void;
   onArrive?: (event: NativeEvent<WaypointEvent>) => void;
+  onNavigationReady?: (event: NativeEvent<any>) => void;
 };
 
 export interface MapboxNavigationProps {
@@ -107,4 +108,5 @@ export interface MapboxNavigationProps {
   onError?: (error: MapboxEvent) => void;
   onCancelNavigation?: (event: MapboxEvent) => void;
   onArrive?: (point: WaypointEvent) => void;
+  onNavigationReady?: (event: any) => void;
 }

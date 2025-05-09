@@ -6,7 +6,9 @@ import {
   Platform,
   StyleSheet,
   Text,
+  UIManager,
   View,
+  findNodeHandle,
 } from 'react-native';
 
 import type { MapboxNavigationProps } from './types';
@@ -33,9 +35,12 @@ class MapboxNavigation extends React.Component<
   MapboxNavigationProps,
   MapboxNavigationState
 > {
+  myRef: React.RefObject<any>;
   constructor(props: MapboxNavigationProps) {
     super(props);
     this.createState();
+
+    this.myRef = React.createRef();
   }
 
   createState() {
@@ -113,6 +118,7 @@ class MapboxNavigation extends React.Component<
     return (
       <View style={style}>
         <MapboxNavigationView
+          ref={this.myRef}
           style={styles.mapbox}
           distanceUnit={distanceUnit}
           startOrigin={[startOrigin.longitude, startOrigin.latitude]}
@@ -128,6 +134,19 @@ class MapboxNavigation extends React.Component<
             onCancelNavigation?.(event.nativeEvent)
           }
           travelMode={travelMode}
+          onNavigationReady={() => {
+            alert('ready')
+            const viewId = findNodeHandle(this.myRef.current);
+            if (viewId) {
+              UIManager.dispatchViewManagerCommand(
+                viewId,
+                // name or ID from getCommandsMap
+                UIManager.getViewManagerConfig('MapboxNavigationView').Commands.startNavigation,
+                []
+              );
+            }
+
+          }}
           {...rest}
         />
       </View>
